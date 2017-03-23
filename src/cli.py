@@ -5,6 +5,7 @@ from life import Life
 import curses
 import numpy
 import sys
+import time
 
 
 class CLI:
@@ -18,9 +19,11 @@ class CLI:
                 for line in f]))
 
     def run(self, stdscr):
-        self.display(stdscr)
         try:
-            stdscr.getkey()
+            while True:
+                self.display(stdscr)
+                time.sleep(1)
+                self.life.next()
         except KeyboardInterrupt:
             pass
 
