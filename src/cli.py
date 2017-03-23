@@ -22,7 +22,7 @@ class CLI:
         try:
             while True:
                 self.display(stdscr)
-                time.sleep(1)
+                time.sleep(0.5)
                 self.life.next()
         except KeyboardInterrupt:
             pass
@@ -30,7 +30,7 @@ class CLI:
     def display(self, stdscr):
         stdscr.clear()
         for i, line in enumerate(self.life.matrix.tolist()):
-            stdscr.addstr(i, 0, ''.join(CLI.outputs[c] for c in line))
+            stdscr.addstr(i, 0, ''.join(CLI.outputs[n] for n in line))
         stdscr.refresh()
 
 
