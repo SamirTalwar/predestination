@@ -11,9 +11,10 @@ class Life:
 
     def next(self):
         neighbours = sum(translate(self.matrix, x, y) for (x, y) in directions)
-        self.matrix = numpy.logical_or(
-            numpy.logical_and(self.matrix == 1, neighbours == 2),
-            neighbours == 3)
+        self.matrix = (
+            ((self.matrix == 1) & (neighbours == 2))
+            | (neighbours == 3)
+        ).astype(int)
 
     def __repr__(self):
         return 'Life({0!r})'.format(self.matrix)
