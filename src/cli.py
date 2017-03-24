@@ -21,7 +21,7 @@ class CLI:
         try:
             while True:
                 self.display(stdscr)
-                time.sleep(0.5)
+                time.sleep(0.1)
                 self.life.next()
         except KeyboardInterrupt:
             pass
