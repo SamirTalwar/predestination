@@ -10,7 +10,7 @@ import time
 
 class CLI:
     inputs = {'.': 0, 'x': 1}
-    outputs = {0: '.', 1: 'x'}
+    outputs = {0: '∙', 1: '█'}
 
     def __init__(self, input_file):
         with open(input_file) as f:
