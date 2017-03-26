@@ -15,14 +15,29 @@ class CLI:
 
     def __init__(self, input_file=None):
         self.input_file = input_file
+        self.playing = True
 
     def run(self, stdscr):
+        curses.noecho()
+        curses.cbreak()
+        stdscr.nodelay(True)
+
         self.load(stdscr)
         try:
             while True:
-                self.display(stdscr)
+                if self.playing:
+                    self.display(stdscr)
+                    self.life.next()
                 time.sleep(0.1)
-                self.life.next()
+                try:
+                    ch = stdscr.getkey()
+                except:
+                    ch = None
+
+                if ch == 'q':
+                    return
+                elif ch == ' ':
+                    self.playing = not self.playing
         except KeyboardInterrupt:
             pass
 
