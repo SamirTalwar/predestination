@@ -34,8 +34,10 @@ class CLIRunner:
         mode = self.live
         try:
             while True:
-                mode = mode()
-        except (KeyboardInterrupt, Quit):
+                next_mode = mode()
+                if next_mode:
+                    mode = next_mode
+        except (Quit, KeyboardInterrupt):
             pass
 
     def live(self):
@@ -43,31 +45,26 @@ class CLIRunner:
         self.display()
         self.life.next()
         time.sleep(0.1)
-        try:
-            ch = self.stdscr.getkey()
-        except:
-            ch = None
 
-        if ch == 'q':
-            return self.quit
-        elif ch == ' ':
+        if self.read() == ' ':
             return self.pause
-        else:
-            return self.live
 
     def pause(self):
         self.stdscr.nodelay(False)
         self.display()
-        ch = self.stdscr.getkey()
-        if ch == 'q':
-            return self.quit
-        elif ch == ' ':
+        if self.read() == ' ':
             return self.live
-        else:
-            return self.pause
 
-    def quit(self):
-        raise Quit()
+    def read(self):
+        try:
+            ch = self.stdscr.getkey()
+        except:
+            return
+
+        if ch == 'q':
+            raise Quit()
+        else:
+            return ch
 
     def load(self):
         if self.input_file:
