@@ -24,4 +24,4 @@ class Life:
 
 
 def translate(matrix, x, y):
-    return numpy.roll(numpy.roll(matrix, x, axis=1), y, axis=0)
+    return numpy.roll(matrix, (y, x), axis=(0, 1))
