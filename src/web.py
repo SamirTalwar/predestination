@@ -20,7 +20,10 @@ def index():
 @socketio.on('start')
 def start(data):
     life = Life.random(int(data['height']), int(data['width']))
-    flask_socketio.emit('generation', life.matrix.tolist())
+    while True:
+        flask_socketio.emit('generation', life.matrix.tolist())
+        life.next()
+        socketio.sleep(0.1)
 
 
 if __name__ == "__main__":
