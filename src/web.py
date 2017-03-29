@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
-from flask import Flask
+import flask
+import os
+import os.path
 
 
-app = Flask(__name__)
+app = flask.Flask(__name__, root_path=os.getcwd())
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 
 if __name__ == "__main__":
