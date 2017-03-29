@@ -8,7 +8,7 @@ directions = \
 
 class Life:
     def __init__(self, matrix):
-        self.matrix = matrix
+        self.matrix = numpy.matrix(matrix)
 
     @staticmethod
     def random(height, width):

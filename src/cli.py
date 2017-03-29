@@ -3,7 +3,6 @@
 from life import Life
 
 import curses
-import numpy
 import sys
 import time
 
@@ -68,9 +67,9 @@ class CLIRunner:
     def load(self):
         if self.input_file:
             with open(self.input_file) as f:
-                self.life = Life(numpy.matrix([
+                self.life = Life([
                     [CLI.inputs[c] for c in line.strip()]
-                    for line in f]))
+                    for line in f])
         else:
             height, width = self.stdscr.getmaxyx()
             self.life = Life.random(height - 1, width - 1)

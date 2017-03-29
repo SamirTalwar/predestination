@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   const CellSize = 16
 
   const width = Math.floor(window.innerWidth / CellSize)
@@ -37,5 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
+    setTimeout(() => socket.emit('next', newCells), 100)
   })
 })
