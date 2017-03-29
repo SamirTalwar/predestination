@@ -4,7 +4,6 @@ from life import Life
 
 import curses
 import numpy
-import random
 import sys
 import time
 
@@ -74,12 +73,7 @@ class CLIRunner:
                     for line in f]))
         else:
             height, width = self.stdscr.getmaxyx()
-            height -= 1
-            width -= 1
-            k = height * width
-            self.life = Life(
-                numpy.matrix(random.choices([0, 1], k=k))
-                .reshape((height, width)))
+            self.life = Life.random(height - 1, width - 1)
 
     def display(self):
         self.stdscr.clear()

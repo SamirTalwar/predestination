@@ -1,4 +1,5 @@
 import numpy
+import random
 
 
 directions = \
@@ -8,6 +9,13 @@ directions = \
 class Life:
     def __init__(self, matrix):
         self.matrix = matrix
+
+    @staticmethod
+    def random(height, width):
+        k = height * width
+        return Life(
+            numpy.matrix(random.choices([0, 1], k=k))
+            .reshape((height, width)))
 
     def next(self):
         neighbours = sum(translate(self.matrix, x, y) for (x, y) in directions)
