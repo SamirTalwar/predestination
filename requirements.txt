@@ -6,6 +6,7 @@ flake8==3.3.0
 Flask==0.12
 Flask-SocketIO==2.8.6
 greenlet==0.4.12
+gunicorn==19.7.1
 itsdangerous==0.24
 Jinja2==2.9.5
 MarkupSafe==1.0
