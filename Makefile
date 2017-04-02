@@ -7,7 +7,7 @@ PORT ?= 8080
 
 .PHONY: web
 web:
-	gunicorn --bind=0.0.0.0:$(PORT) --pythonpath=src,$(SITE_PACKAGES) --worker-class=eventlet --workers=1 web:app
+	env/bin/gunicorn --bind=0.0.0.0:$(PORT) --pythonpath=src,$(SITE_PACKAGES) --worker-class=eventlet --workers=1 web:app
 
 .PHONY: site-packages
 site-packages: $(SITE_PACKAGES)
