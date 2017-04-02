@@ -21,14 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.body.appendChild(grid)
 
-  const socket = io.connect('http://' + document.domain + ':' + location.port)
+  const socket = io('http://' + document.domain + ':' + location.port)
+  let state = undefined
   socket.on('connect', () => {
-    socket.emit('start', {width, height})
+    if (state) {
+      socket.emit('next', state)
+    } else {
+      socket.emit('start', {width, height})
+    }
   })
-  socket.on('generation', newCells => {
+  socket.on('generation', newState => {
+    state = newState
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (newCells[y][x]) {
+        if (state[y][x]) {
           cells[y][x].classList.remove('dead')
           cells[y][x].classList.add('alive')
         } else {
@@ -37,6 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    setTimeout(() => socket.emit('next', newCells), 100)
+    setTimeout(() => socket.emit('next', state), 100)
   })
 })
