@@ -1,15 +1,24 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 set -e
 set -u
 
-cd $(dirname ${(%):-%N})
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-PORT=${PORT:-8080}
+PORT="${PORT:-8080}"
 
-exec env/bin/gunicorn \
-  --bind=0.0.0.0:$PORT \
-  --pythonpath=src,env/lib/python3.6/site-packages \
+if [[ -d env ]]; then
+  GUNICORN=env/bin/gunicorn
+  PYTHONPATH=src,env/lib/python3.6/site-packages
+else
+  GUNICORN=gunicorn
+  PYTHONPATH=src
+fi
+
+
+exec "$GUNICORN" \
+  --bind="0.0.0.0:$PORT" \
+  --pythonpath="$PYTHONPATH" \
   --worker-class=eventlet \
   --workers=1 \
   web:app
