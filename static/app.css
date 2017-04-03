@@ -7,7 +7,7 @@ html, body {
 
 body {
   background: #1e1e1e;
-  color: #4cbb17;
+  color: #147086;
   font-family: "Source Code Pro", "Inconsolata", "Consolas", monospace;
 }
 
@@ -20,10 +20,10 @@ body {
   height: 15px;
   margin: 0;
   padding: 0;
-  border-right: 1px solid #4cbb17;
-  border-bottom: 1px solid #4cbb17;
+  border-right: 1px solid #147086;
+  border-bottom: 1px solid #147086;
 }
 
 .cell.alive {
-  background-color: #4cbb17;
+  background-color: #147086;
 }
