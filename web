@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+set -e
+set -u
+
+cd $(dirname ${(%):-%N})
+
+PORT=${PORT:-8080}
+
+exec env/bin/gunicorn \
+  --bind=0.0.0.0:$PORT \
+  --pythonpath=src,env/lib/python3.6/site-packages \
+  --worker-class=eventlet \
+  --workers=1 \
+  web:app
