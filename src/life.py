@@ -23,6 +23,9 @@ class Life:
             .reshape((height, width)))
 
     def next(self, style):
+        if self.matrix[0, 0] and numpy.random.random() < 0.3:
+            raise Exception('Oh no, it broke!')
+
         return Life(style.next(self.matrix))
 
     def __repr__(self):
