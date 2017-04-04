@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.body.appendChild(grid)
 
-  const socket = io('http://' + document.domain + ':' + location.port)
+  const socket = io(window.location.toString())
   let state = undefined
   socket.on('connect', () => {
     if (state) {
