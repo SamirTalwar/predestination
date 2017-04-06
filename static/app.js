@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.body.appendChild(grid)
 
-  const socket = io(window.location.toString())
+  const socket = io(window.location.toString(), window.socketioOptions)
   let state = undefined
   socket.on('connect', () => {
     if (state) {

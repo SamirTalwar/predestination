@@ -4,6 +4,11 @@
     <title>Conway's Game of Life</title>
     <link rel="stylesheet" href="/static/app.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script>
+    window.socketioOptions = {
+      transports: {{ transports | tojson }},
+    }
+    </script>
     <script src="/static/app.js"></script>
   </head>
 

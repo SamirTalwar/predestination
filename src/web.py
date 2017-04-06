@@ -3,18 +3,20 @@
 from life import Life
 
 import flask
+import flask.templating
 import flask_socketio
 import os
 import os.path
 
 
 app = flask.Flask(__name__, root_path=os.getcwd())
+transports = os.environ.get('TRANSPORTS', 'websocket polling').split()
 socketio = flask_socketio.SocketIO(app)
 
 
 @app.route('/')
 def index():
-    return app.send_static_file('index.html')
+    return flask.templating.render_template('index.html', transports=transports)
 
 
 @socketio.on('start')
