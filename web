@@ -15,10 +15,30 @@ else
   PYTHONPATH=src
 fi
 
+PID=0
 
-exec "$GUNICORN" \
-  --bind="0.0.0.0:$PORT" \
-  --pythonpath="$PYTHONPATH" \
-  --worker-class=eventlet \
-  --workers=1 \
-  web:app
+function start_app {
+  "$GUNICORN" \
+    --bind="0.0.0.0:$PORT" \
+    --pythonpath="$PYTHONPATH" \
+    --worker-class=eventlet \
+    --workers=1 \
+    web:app &
+  PID="$!"
+}
+
+function stop_app {
+  EXIT_STATUS="$?"
+  if (( "$PID" )); then
+    kill "$PID"
+    wait "$PID"
+    exit 0
+  else
+    exit "$EXIT_STATUS"
+  fi
+}
+
+start_app
+trap stop_app HUP INT QUIT TERM
+
+wait "$PID"
