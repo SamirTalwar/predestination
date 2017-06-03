@@ -5,10 +5,20 @@ import numpy
 directions = \
     set((x, y) for x in range(-1, 2) for y in range(-1, 2)) - set([(0, 0)])
 
+inputs = {
+    '.': 0,
+    'x': 1,
+}
+
 
 class Life:
     def __init__(self, matrix):
         self.matrix = numpy.matrix(matrix)
+
+    @staticmethod
+    def from_file(path):
+        with open(path) as f:
+            return Life([[inputs[c] for c in line.strip()] for line in f])
 
     @staticmethod
     def random(height, width):

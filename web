@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 set -e
 set -u
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd $(dirname $0)
 
-PORT="${PORT:-8080}"
+PORT=${PORT:-8080}
 
 if [[ -d env ]]; then
   GUNICORN=env/bin/gunicorn
@@ -18,9 +18,11 @@ fi
 PID=0
 
 function start_app {
-  "$GUNICORN" \
-    --bind="0.0.0.0:$PORT" \
-    --pythonpath="$PYTHONPATH" \
+  zparseopts -- -file:=INPUT_FILE
+  INPUT_FILE=${INPUT_FILE[2]} \
+  $GUNICORN \
+    --bind="0.0.0.0:${PORT}" \
+    --pythonpath=$PYTHONPATH \
     --worker-class=eventlet \
     --workers=1 \
     web:app &
@@ -28,17 +30,17 @@ function start_app {
 }
 
 function stop_app {
-  EXIT_STATUS="$?"
-  if (( "$PID" )); then
-    kill "$PID"
-    wait "$PID"
+  EXIT_STATUS=$?
+  if (( $PID )); then
+    kill $PID
+    wait $PID
     exit 0
   else
-    exit "$EXIT_STATUS"
+    exit $EXIT_STATUS
   fi
 }
 
-start_app
+start_app $@
 trap stop_app HUP INT QUIT TERM
 
-wait "$PID"
+wait $PID

@@ -4,27 +4,27 @@ import curses
 import sys
 import time
 
+import options
 from life import Life
 
 
-def main(*args):
-    curses.wrapper(CLI(*args).run)
+def main(args):
+    curses.wrapper(CLI(options.parse(args)).run)
 
 
 class CLI:
-    inputs = {'.': 0, 'x': 1}
     outputs = {0: '∙', 1: '█'}
 
-    def __init__(self, input_file=None):
-        self.input_file = input_file
+    def __init__(self, options):
+        self.options = options
 
     def run(self, stdscr):
-        CLIRunner(self.input_file, stdscr).run()
+        CLIRunner(self.options, stdscr).run()
 
 
 class CLIRunner:
-    def __init__(self, input_file, stdscr):
-        self.input_file = input_file
+    def __init__(self, options, stdscr):
+        self.input_file = options.input_file
         self.stdscr = stdscr
 
     def run(self):
@@ -70,10 +70,7 @@ class CLIRunner:
 
     def load(self):
         if self.input_file:
-            with open(self.input_file) as f:
-                self.life = Life([
-                    [CLI.inputs[c] for c in line.strip()]
-                    for line in f])
+            self.life = Life.from_file(self.input_file)
         else:
             height, width = self.stdscr.getmaxyx()
             self.life = Life.random(height - 1, width - 1)
@@ -90,4 +87,4 @@ class Quit(Exception):
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:])
+    main(sys.argv[1:])
