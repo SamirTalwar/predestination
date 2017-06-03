@@ -7,6 +7,10 @@ import time
 from life import Life
 
 
+def main(*args):
+    curses.wrapper(CLI(*args).run)
+
+
 class CLI:
     inputs = {'.': 0, 'x': 1}
     outputs = {0: '∙', 1: '█'}
@@ -86,4 +90,4 @@ class Quit(Exception):
 
 
 if __name__ == '__main__':
-    curses.wrapper(CLI(*sys.argv[1:]).run)
+    main(*sys.argv[1:])

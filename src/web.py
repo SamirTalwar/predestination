@@ -33,5 +33,9 @@ def next(grid):
     flask_socketio.emit('generation', life.matrix.tolist())
 
 
-if __name__ == "__main__":
+def main():
     socketio.run(app)
+
+
+if __name__ == "__main__":
+    main()
