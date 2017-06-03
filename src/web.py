@@ -3,7 +3,6 @@
 import os
 import os.path
 import sys
-from collections import namedtuple
 
 import flask
 import flask.templating
@@ -12,7 +11,7 @@ import flask_socketio
 import options
 from life import Life
 
-opts = namedtuple('Options', ['input_file'])(os.environ.get('INPUT_FILE'))
+opts = options.process(os.environ.get('STYLE'), os.environ.get('INPUT_FILE'))
 app = flask.Flask(__name__, root_path=os.getcwd())
 transports = os.environ.get('TRANSPORTS', 'websocket polling').split()
 socketio = flask_socketio.SocketIO(app)
@@ -35,7 +34,7 @@ def start(data):
 @socketio.on('next')
 def next(grid):
     life = Life(grid)
-    life.next()
+    opts.style.next(life)
     flask_socketio.emit('generation', life.matrix.tolist())
 
 

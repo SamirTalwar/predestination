@@ -25,6 +25,7 @@ class CLI:
 class CLIRunner:
     def __init__(self, options, stdscr):
         self.input_file = options.input_file
+        self.style = options.style
         self.stdscr = stdscr
 
     def run(self):
@@ -45,7 +46,7 @@ class CLIRunner:
     def live(self):
         self.stdscr.nodelay(True)
         self.display()
-        self.life.next()
+        self.style.next(self.life)
         time.sleep(0.1)
 
         if self.read() == ' ':
