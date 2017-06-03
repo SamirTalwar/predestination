@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from life import Life
-
 import curses
 import sys
 import time
+
+from life import Life
 
 
 class CLI:
