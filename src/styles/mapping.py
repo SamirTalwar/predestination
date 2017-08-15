@@ -1,15 +1,8 @@
 import numpy
-import numpy.lib.stride_tricks as numpy_stride
 
+import matrices
 
-def integer_repr(array):
-    representation = 0
-    for bit in array:
-        representation = (representation << 1) | bit
-    return representation
-
-
-alive = set(map(integer_repr, [
+alive = set(map(matrices.integer_repr, [
     [0, 0, 0, 0, 1, 0, 0, 1, 1],
     [0, 0, 0, 0, 1, 0, 1, 0, 1],
     [0, 0, 0, 0, 1, 0, 1, 1, 0],
@@ -156,14 +149,8 @@ alive = set(map(integer_repr, [
 
 
 def next(life):
-    grown = grow(life.matrix)
-    windows = numpy_stride.as_strided(
-            grown,
-            shape=life.matrix.shape + (3, 3),
-            strides=grown.strides + grown.strides)
-    flattened_windows = windows.reshape(life.matrix.shape + (9,))
     life.matrix = numpy.matrix(
-            numpy.apply_along_axis(lookup, 2, flattened_windows))
+            numpy.apply_along_axis(lookup, 2, matrices.windows(life.matrix)))
 
 
 def grow(matrix):
@@ -173,4 +160,4 @@ def grow(matrix):
 
 
 def lookup(array):
-    return 1 if integer_repr(array) in alive else 0
+    return 1 if matrices.integer_repr(array) in alive else 0
