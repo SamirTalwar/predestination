@@ -1,5 +1,3 @@
-import random
-
 import numpy
 
 inputs = {
@@ -21,7 +19,7 @@ class Life:
     def random(height, width):
         k = height * width
         return Life(
-            numpy.matrix(random.choices([0, 1], k=k))
+            numpy.matrix(numpy.random.random_integers(0, 1, k))
             .reshape((height, width)))
 
     def __repr__(self):
