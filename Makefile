@@ -2,6 +2,7 @@ SHELL := zsh -e -u -o pipefail
 
 PYTHON = python3.6
 SITE_PACKAGES = env/lib/$(PYTHON)/site-packages
+TAG = samirtalwar/predestination
 
 .PHONY: site-packages
 site-packages: $(SITE_PACKAGES)
@@ -23,3 +24,11 @@ upgrade-dependencies: env/bin/python
 		env/bin/pip install --upgrade $${packages[@]}; \
 		env/bin/pip freeze > requirements.txt; \
 	fi
+
+.PHONY: docker-build
+docker-build:
+	docker build --pull --tag=$(TAG) .
+
+.PHONY: docker-push
+docker-push: docker-build
+	docker push $(TAG)
