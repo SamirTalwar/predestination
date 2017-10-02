@@ -1,2 +1,6 @@
 .git
+Dockerfile
+Makefile
+README.md
 env
+*.pyc
