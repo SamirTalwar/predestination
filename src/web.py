@@ -34,7 +34,7 @@ def start(data):
 @socketio.on('next')
 def next(grid):
     life = Life(grid)
-    opts.style.next(life)
+    life = life.next(opts.style)
     flask_socketio.emit('generation', life.matrix.tolist())
 
 

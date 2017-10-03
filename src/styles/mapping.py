@@ -148,9 +148,9 @@ alive = set(map(matrices.integer_repr, [
 ]))
 
 
-def next(life):
-    life.matrix = numpy.matrix(
-            numpy.apply_along_axis(lookup, 2, matrices.windows(life.matrix)))
+def next(grid):
+    return numpy.matrix(
+            numpy.apply_along_axis(lookup, 2, matrices.windows(grid)))
 
 
 def grow(matrix):

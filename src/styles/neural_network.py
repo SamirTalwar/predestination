@@ -2,8 +2,9 @@ import os
 import os.path
 import pickle
 
-import matrices
 import numpy
+
+import matrices
 import styles.translate as reference
 from life import Life
 
@@ -25,13 +26,12 @@ def construct_next():
     with open(weights_file, 'rb') as f:
         weights = numpy.matrix(pickle.load(f))
 
-    def next(life):
-        life.matrix = \
-            sigmoid(matrices.windows(life.matrix)
-                    .reshape(life.matrix.size, 9)
-                    .dot(weights)) \
-            .reshape(life.matrix.shape) \
-            .round()
+    def next(grid):
+        return sigmoid(matrices.windows(grid)
+                       .reshape(grid.size, 9)
+                       .dot(weights)) \
+               .reshape(grid.shape) \
+               .round()
 
     return next
 
@@ -48,9 +48,7 @@ def train():
 
     life = Life.random(width, height)
     X = matrices.windows(life.matrix).reshape(size, 9)  # size * 9
-
-    reference.next(life)
-    y = life.matrix.reshape(size, 1)  # size * 1
+    y = life.next(reference).matrix.reshape(size, 1)  # size * 1
 
     theta1 = 2 * numpy.random.random((9, 1)) - 1  # 9 * 1
 

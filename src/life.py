@@ -22,6 +22,9 @@ class Life:
             numpy.matrix(numpy.random.random_integers(0, 1, k))
             .reshape((height, width)))
 
+    def next(self, style):
+        return Life(style.next(self.matrix))
+
     def __repr__(self):
         return 'Life({0!r})'.format(self.matrix)
 

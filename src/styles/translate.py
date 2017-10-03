@@ -4,10 +4,10 @@ directions = \
     set((x, y) for x in range(-1, 2) for y in range(-1, 2)) - set([(0, 0)])
 
 
-def next(life):
-    neighbours = sum(translate(life.matrix, x, y) for (x, y) in directions)
-    life.matrix = (
-        ((life.matrix == 1) & (neighbours == 2))
+def next(grid):
+    neighbours = sum(translate(grid, x, y) for (x, y) in directions)
+    return (
+        ((grid == 1) & (neighbours == 2))
         | (neighbours == 3)
     ).astype(int)
 

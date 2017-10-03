@@ -46,7 +46,7 @@ class CLIRunner:
     def live(self):
         self.stdscr.nodelay(True)
         self.display()
-        self.style.next(self.life)
+        self.life = self.life.next(self.style)
         time.sleep(0.1)
 
         if self.read() == ' ':
