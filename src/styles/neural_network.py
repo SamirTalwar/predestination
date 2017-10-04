@@ -30,7 +30,8 @@ def construct_next():
         a0 = matrices.windows(grid).reshape(grid.size, 9)
         a1 = sigmoid(numpy.dot(a0, theta1))
         a2 = sigmoid(numpy.dot(a1, theta2))
-        return a2.reshape(grid.shape).round().astype(int)
+        y = numpy.argmax(a2, axis=1)
+        return y.reshape(grid.shape).round().astype(int)
 
     return next
 
@@ -41,16 +42,20 @@ def train():
     height = 10
     size = width * height
     hidden_layer_size = 9
+    categories = 2
 
     numpy.random.seed(0)
     os.makedirs(training_dir, exist_ok=True)
 
     life = Life.random(width, height).next(reference)
     X = matrices.windows(life.matrix).reshape(size, 9)
-    y = life.next(reference).matrix.reshape(size, 1)
+    results = life.next(reference).matrix.reshape(size, 1)
+    category_indices = numpy.repeat(
+            numpy.matrix([numpy.arange(categories)]), size, axis=0)
+    y = (category_indices == results).astype(int)
 
     theta1 = 2 * numpy.random.random((9, hidden_layer_size)) - 1
-    theta2 = 2 * numpy.random.random((hidden_layer_size, 1)) - 1
+    theta2 = 2 * numpy.random.random((hidden_layer_size, categories)) - 1
 
     print('Training...')
     for i in range(1, iterations + 1):
