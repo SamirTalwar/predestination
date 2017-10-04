@@ -24,55 +24,58 @@ def sigmoid_d(x):
 
 def construct_next():
     with open(weights_file, 'rb') as f:
-        weights = numpy.matrix(pickle.load(f))
+        theta1, theta2 = pickle.load(f)
 
     def next(grid):
-        return sigmoid(matrices.windows(grid)
-                       .reshape(grid.size, 9)
-                       .dot(weights)) \
-               .reshape(grid.shape) \
-               .round()
+        a0 = matrices.windows(grid).reshape(grid.size, 9)
+        a1 = sigmoid(numpy.dot(a0, theta1))
+        a2 = sigmoid(numpy.dot(a1, theta2))
+        return a2.reshape(grid.shape).round().astype(int)
 
     return next
 
 
-next = construct_next()
-
-
 def train():
-    iterations = 10000
+    iterations = 50000
     width = 10
     height = 10
     size = width * height
-    numpy.random.seed(1)
+    hidden_layer_size = 9
 
-    life = Life.random(width, height)
-    X = matrices.windows(life.matrix).reshape(size, 9)  # size * 9
-    y = life.next(reference).matrix.reshape(size, 1)  # size * 1
+    numpy.random.seed(0)
+    os.makedirs(training_dir, exist_ok=True)
 
-    theta1 = 2 * numpy.random.random((9, 1)) - 1  # 9 * 1
+    life = Life.random(width, height).next(reference)
+    X = matrices.windows(life.matrix).reshape(size, 9)
+    y = life.next(reference).matrix.reshape(size, 1)
 
-    for i in range(iterations):
-        a1 = X  # size * 9
-        z2 = a1.dot(theta1)  # size * 1
-        a2 = sigmoid(z2)  # size * 1
+    theta1 = 2 * numpy.random.random((9, hidden_layer_size)) - 1
+    theta2 = 2 * numpy.random.random((hidden_layer_size, 1)) - 1
 
-        d2 = y - a2  # size * 1
-        theta1_grad = numpy.multiply(d2, sigmoid_d(a2)) / size  # size * 1
-        theta1 += a1.T.dot(theta1_grad)  # 9 * 1
+    print('Training...')
+    for i in range(1, iterations + 1):
+        a0 = X
+        a1 = sigmoid(numpy.dot(a0, theta1))
+        a2 = sigmoid(numpy.dot(a1, theta2))
 
-    return theta1
+        a2_error = y - a2
+        if i % 1000 == 0:
+            print('Training error after %d iterations: %f'
+                  % (i, numpy.mean(numpy.abs(a2_error))))
 
+        a2_delta = numpy.multiply(a2_error, sigmoid_d(a2))
+        a1_error = a2_delta.dot(theta2.T)
+        a1_delta = numpy.multiply(a1_error, sigmoid_d(a1))
 
-def dump():
-    with open(weights_file, 'rb') as f:
-        print(pickle.load(f))
+        theta2 += a1.T.dot(a2_delta)
+        theta1 += a0.T.dot(a1_delta)
+
+    weights = (theta1, theta2)
+    with open(weights_file, 'wb') as f:
+        pickle.dump(weights, f)
 
 
 if __name__ == '__main__':
-    os.makedirs(training_dir, exist_ok=True)
-
-    print('Training...')
-    weights = train()
-    with open(weights_file, 'wb') as f:
-        pickle.dump(weights, f)
+    train()
+else:
+    next = construct_next()
