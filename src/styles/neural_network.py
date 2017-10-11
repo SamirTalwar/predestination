@@ -47,12 +47,21 @@ def train():
     numpy.random.seed(0)
     os.makedirs(training_dir, exist_ok=True)
 
-    life = Life.random(width, height).next(reference)
-    X = matrices.windows(life.matrix).reshape(size, 9)
-    results = life.next(reference).matrix.reshape(size, 1)
-    category_indices = numpy.repeat(
-            numpy.matrix([numpy.arange(categories)]), size, axis=0)
-    y = (category_indices == results).astype(int)
+    def generate_training_data(life):
+        X = matrices.windows(life.matrix).reshape(size, 9)
+        next_life = life.next(reference)
+        results = next_life.matrix.reshape(size, 1)
+        category_indices = numpy.repeat(
+                numpy.matrix([numpy.arange(categories)]), size, axis=0)
+        y = (category_indices == results).astype(int)
+        return (next_life, X, y)
+
+    life = Life.random(width, height)
+    life, X, y = generate_training_data(life)
+    for i in range(9):
+        life, new_X, new_y = generate_training_data(life)
+        X = numpy.concatenate((X, new_X), axis=0)
+        y = numpy.concatenate((y, new_y), axis=0)
 
     theta1 = 2 * numpy.random.random((9, hidden_layer_size)) - 1
     theta2 = 2 * numpy.random.random((hidden_layer_size, categories)) - 1
