@@ -1,3 +1,4 @@
+import itertools
 import os
 import os.path
 import pickle
@@ -24,26 +25,31 @@ def sigmoid_d(x):
 
 def construct_next():
     with open(weights_file, 'rb') as f:
-        w1, w2 = pickle.load(f)
+        weights = pickle.load(f)
 
     def next(grid):
-        a0 = matrices.windows(grid).reshape(grid.size, 9)
-        a1 = sigmoid(a0 * w1)
-        a2 = sigmoid(a1 * w2)
-        y = numpy.argmax(a2, axis=1)
+        neurons = [matrices.windows(grid).reshape(grid.size, 9)]
+        for layer_weights in weights:
+            neurons.append(sigmoid(neurons[-1] * layer_weights))
+        y = numpy.argmax(neurons[-1], axis=1)
         return y.reshape(grid.shape).round().astype(int)
 
     return next
+
+
+def sliding_window(values, window_size):
+    lists = (itertools.islice(values, i, None) for i in range(window_size))
+    return zip(*lists)
 
 
 def random_weights(rows, columns):
     return numpy.matrix(numpy.random.random((rows, columns)) * 2 - 1)
 
 
-def training_data(width, height, categories):
+def training_data(width, height):
+    categories = numpy.array([0, 1])
     size = width * height
-    category_indices = numpy.repeat(
-            numpy.matrix([numpy.arange(categories)]), size, axis=0)
+    category_indices = numpy.repeat(numpy.matrix([categories]), size, axis=0)
 
     os.makedirs(training_dir, exist_ok=True)
 
@@ -70,36 +76,41 @@ def train():
     iterations = 100000
     width = 10
     height = 10
-    categories = 2
-    hidden_layer_size = 25
+    hidden_layers = [25]
     learning_rate = 0.1
 
     numpy.random.seed(1)
-    X, y = training_data(width, height, categories)
+    X, y = training_data(width, height)
 
-    w1 = random_weights(X.shape[1], hidden_layer_size)
-    w2 = random_weights(hidden_layer_size, y.shape[1])
+    columns = [X.shape[1]] + hidden_layers + [y.shape[1]]
+    weights = [random_weights(a, b) for (a, b) in sliding_window(columns, 2)]
 
     print('Training...')
     for i in range(1, iterations + 1):
-        a0 = X
-        a1 = sigmoid(a0 * w1)
-        a2 = sigmoid(a1 * w2)
+        neurons = [X]
+        for layer_weights in weights:
+            neurons.append(sigmoid(neurons[-1] * layer_weights))
 
-        a2_error = y - a2
-        d2 = numpy.multiply(a2_error, sigmoid_d(a2))
-        w2_delta = a1.T * d2 * learning_rate
-        d1 = numpy.multiply(d2 * w2.T, sigmoid_d(a1))
-        w1_delta = a0.T * d1 * learning_rate
+        error = y - neurons[-1]
+        next_layer_error = error
+        weight_deltas = []
+        for layer_weights, (next_layer, previous_layer) \
+                in zip(reversed(weights),
+                       sliding_window(list(reversed(neurons)), 2)):
+            d = numpy.multiply(next_layer_error, sigmoid_d(next_layer))
+            weight_delta = previous_layer.T * d * learning_rate
+            weight_deltas.append(weight_delta)
+            next_layer_error = d * layer_weights.T
+        weight_deltas.reverse()
 
-        w1 += w1_delta
-        w2 += w2_delta
+        weights = [layer_weights + delta
+                   for (layer_weights, delta)
+                   in zip(weights, weight_deltas)]
 
         if i % 1000 == 0:
             print('Training error after %d iterations: %f'
-                  % (i, numpy.mean(numpy.abs(a2_error))))
+                  % (i, numpy.mean(numpy.abs(error))))
 
-    weights = (w1, w2)
     with open(weights_file, 'wb') as f:
         pickle.dump(weights, f)
     print('Saved.')
