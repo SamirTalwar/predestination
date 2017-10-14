@@ -63,10 +63,11 @@ def training_data(width, height):
     life = Life.random(width, height)
     life, X_and_y = iterate(life)
     for i in range(9):
-        life, new_X_and_y = iterate(life)
-        X_and_y = numpy.concatenate((X_and_y, new_X_and_y), axis=0)
+        life = Life.random(width, height)
+        life, X_and_y_1 = iterate(life)
+        life, X_and_y_2 = iterate(life)
+        X_and_y = numpy.concatenate((X_and_y, X_and_y_1, X_and_y_2), axis=0)
 
-    X_and_y = numpy.unique(X_and_y, axis=0)
     X = X_and_y[:, :9]
     y = X_and_y[:, 9:]
     return (X, y)
@@ -77,7 +78,7 @@ def train():
     width = 10
     height = 10
     hidden_layers = [25]
-    learning_rate = 0.1
+    learning_rate = 0.01
 
     numpy.random.seed(1)
     X, y = training_data(width, height)
