@@ -30,11 +30,11 @@ Just run `./web`. It accepts the same options as `./cli`, and you can set the `P
 
 You can configure the application to use a different style of iteration.
 
-There are currently three styles:
+There are currently three styles, which can be specified using the `--style` option:
 
   * `translate` (the default) uses matrix translation to calculate the next generation.
   * `mapping` uses a huge lookup table.
-  * `neural_network` uses a neural network, which requires training first.
+  * `neural_network` uses a basic 3-layer neural network, which requires training first.
     To train it, run `PYTHONPATH=src python ./src/styles/neural_network.py`.
 
 ### Input
