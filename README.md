@@ -2,6 +2,8 @@
 
 Several implementations of [Conway's Game of Life][].
 
+[![Recording](https://asciinema.org/a/142461.png)](https://asciinema.org/a/142461)
+
 [Conway's Game of Life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 
 ## Building
