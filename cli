@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+set -e
+set -u
+
+cd $(dirname $0)
+
+if [[ -d env ]]; then
+  PYTHON=env/bin/python
+  PYTHONPATH=src,env/lib/python3.6/site-packages
+else
+  PYTHON=python
+  PYTHONPATH=src
+fi
+
+$PYTHON src/cli.py $@
