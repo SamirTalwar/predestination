@@ -28,10 +28,10 @@ def construct_next():
         weights = pickle.load(f)
 
     def next(grid):
-        neurons = [matrices.windows(grid).reshape(grid.size, 9)]
+        current_layer = [matrices.windows(grid).reshape(grid.size, 9)]
         for layer_weights in weights:
-            neurons.append(sigmoid(neurons[-1] * layer_weights))
-        y = numpy.argmax(neurons[-1], axis=1)
+            current_layer = sigmoid(current_layer * layer_weights)
+        y = numpy.argmax(current_layer, axis=1)
         return y.reshape(grid.shape).round().astype(int)
 
     return next
