@@ -48,28 +48,28 @@ def random_weights(rows, columns):
 
 def training_data(width, height):
     categories = numpy.array([0, 1])
+    input_columns = 9
     size = width * height
     category_indices = numpy.repeat(numpy.matrix([categories]), size, axis=0)
 
     os.makedirs(training_dir, exist_ok=True)
 
     def iterate(life):
-        X = matrices.windows(life.matrix).reshape(size, 9)
+        X = matrices.windows(life.matrix).reshape(size, input_columns)
         next_life = life.next(reference)
         results = next_life.matrix.reshape(size, 1)
         y = (category_indices == results).astype(int)
         return (next_life, numpy.concatenate((X, y), axis=1))
 
-    life = Life.random(width, height)
-    life, X_and_y = iterate(life)
-    for i in range(9):
+    X_and_y = numpy.matrix(numpy.zeros((0, input_columns + categories.size)))
+    for i in range(10):
         life = Life.random(width, height)
         life, X_and_y_1 = iterate(life)
         life, X_and_y_2 = iterate(life)
         X_and_y = numpy.concatenate((X_and_y, X_and_y_1, X_and_y_2), axis=0)
 
-    X = X_and_y[:, :9]
-    y = X_and_y[:, 9:]
+    X = X_and_y[:, :input_columns]
+    y = X_and_y[:, input_columns:]
     return (X, y)
 
 
