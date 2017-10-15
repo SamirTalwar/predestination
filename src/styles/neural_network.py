@@ -1,4 +1,3 @@
-import itertools
 import os
 import os.path
 import pickle
@@ -37,9 +36,8 @@ def construct_next():
     return next
 
 
-def sliding_window(values, window_size):
-    lists = (itertools.islice(values, i, None) for i in range(window_size))
-    return zip(*lists)
+def pairwise(values):
+    return zip(values, values[1:])
 
 
 def random_weights(rows, columns):
@@ -84,7 +82,7 @@ def train():
     X, y = training_data(width, height)
 
     columns = [X.shape[1]] + hidden_layers + [y.shape[1]]
-    weights = [random_weights(a, b) for (a, b) in sliding_window(columns, 2)]
+    weights = [random_weights(a, b) for (a, b) in pairwise(columns)]
 
     print('Training...')
     for i in range(1, iterations + 1):
@@ -92,17 +90,15 @@ def train():
         for layer_weights in weights:
             neurons.append(sigmoid(neurons[-1] * layer_weights))
 
+        backpropagation = reversed(list(zip(weights, pairwise(neurons))))
         error = y - neurons[-1]
         next_layer_error = error
         weight_deltas = []
-        for layer_weights, (next_layer, previous_layer) \
-                in zip(reversed(weights),
-                       sliding_window(list(reversed(neurons)), 2)):
+        for layer_weights, (previous_layer, next_layer) in backpropagation:
             d = numpy.multiply(next_layer_error, sigmoid_d(next_layer))
             weight_delta = previous_layer.T * d * learning_rate
-            weight_deltas.append(weight_delta)
+            weight_deltas.insert(0, weight_delta)
             next_layer_error = d * layer_weights.T
-        weight_deltas.reverse()
 
         weights = [layer_weights + delta
                    for (layer_weights, delta)
