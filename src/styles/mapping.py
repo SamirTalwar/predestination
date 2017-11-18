@@ -4,6 +4,9 @@ import matrices
 
 
 class Style:
+    def __init__(self, args):
+        pass
+
     def next(self, grid):
         return numpy.matrix(
                 numpy.apply_along_axis(lookup, 2, matrices.windows(grid)))

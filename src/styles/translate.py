@@ -2,6 +2,9 @@ import numpy
 
 
 class Style:
+    def __init__(self, args):
+        pass
+
     def next(self, grid):
         neighbours = sum(translate(grid, x, y) for (x, y) in directions)
         return (

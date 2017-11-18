@@ -15,8 +15,12 @@ weights_file = os.path.join(training_dir, 'weights.pickle')
 
 
 class Style:
-    def __init__(self):
-        with open(weights_file, 'rb') as f:
+    @staticmethod
+    def populate_args(parser):
+        parser.add_argument('--weight-file')
+
+    def __init__(self, args):
+        with open(args.weight_file or weights_file, 'rb') as f:
             self.weights = pickle.load(f)
 
     def next(self, grid):
