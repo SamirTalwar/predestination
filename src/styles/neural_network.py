@@ -14,26 +14,25 @@ training_dir = os.path.join(root, 'test', 'training')
 weights_file = os.path.join(training_dir, 'weights.pickle')
 
 
+class Style:
+    def __init__(self):
+        with open(weights_file, 'rb') as f:
+            self.weights = pickle.load(f)
+
+    def next(self, grid):
+        current_layer = [matrices.windows(grid).reshape(grid.size, 9)]
+        for layer_weights in self.weights:
+            current_layer = sigmoid(current_layer * layer_weights)
+        y = numpy.argmax(current_layer, axis=1)
+        return y.reshape(grid.shape).round().astype(int)
+
+
 def sigmoid(x):
     return 1 / (1 + numpy.exp(-x))
 
 
 def sigmoid_d(x):
     return numpy.multiply(x, 1 - x)
-
-
-def construct_next():
-    with open(weights_file, 'rb') as f:
-        weights = pickle.load(f)
-
-    def next(grid):
-        current_layer = [matrices.windows(grid).reshape(grid.size, 9)]
-        for layer_weights in weights:
-            current_layer = sigmoid(current_layer * layer_weights)
-        y = numpy.argmax(current_layer, axis=1)
-        return y.reshape(grid.shape).round().astype(int)
-
-    return next
 
 
 def pairwise(values):
@@ -115,5 +114,3 @@ def train():
 
 if __name__ == '__main__':
     train()
-else:
-    next = construct_next()

@@ -19,4 +19,4 @@ def parse(args=sys.argv[1:]):
 def process(style_name, input_file):
     style_module = 'styles.' + (style_name or DEFAULT_STYLE_NAME)
     style = importlib.import_module(style_module)
-    return Options(style, input_file)
+    return Options(style.Style(), input_file)
