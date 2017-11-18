@@ -10,7 +10,8 @@ STYLE_NAMES = [os.path.splitext(f)[0]
                for f in os.listdir(STYLES_DIR)
                if os.path.isfile(os.path.join(STYLES_DIR, f))
                and os.path.splitext(f)[1] == '.py']
-STYLES = {name: importlib.import_module('styles.' + name).Style
+STYLES = {name.replace('_', '-'):
+          importlib.import_module('styles.' + name).Style
           for name in STYLE_NAMES}
 DEFAULT_STYLE_NAME = 'translate'
 
