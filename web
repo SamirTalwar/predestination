@@ -18,15 +18,13 @@ fi
 PID=0
 
 function start_app {
-  zparseopts -- -file:=INPUT_FILE -style:=STYLE
-  INPUT_FILE=${INPUT_FILE[2]:-} \
-  STYLE=${STYLE[2]:-} \
   $GUNICORN \
     --bind="0.0.0.0:${PORT}" \
     --pythonpath=$PYTHONPATH \
     --worker-class=eventlet \
     --workers=1 \
-    web:app &
+    web:app \
+    -- $@ &
   PID="$!"
 }
 

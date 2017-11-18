@@ -11,7 +11,7 @@ import flask_socketio
 import options
 from life import Life
 
-opts = options.process(os.environ.get('STYLE'), os.environ.get('INPUT_FILE'))
+opts = None
 app = flask.Flask(__name__, root_path=os.getcwd())
 transports = os.environ.get('TRANSPORTS', 'websocket polling').split()
 socketio = flask_socketio.SocketIO(app)
@@ -38,11 +38,10 @@ def next(grid):
     flask_socketio.emit('generation', life.matrix.tolist())
 
 
-def main(args):
-    global opts
-    opts = options.parse(args)
-    socketio.run(app)
-
-
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    socketio.run(app)
+else:
+    args = sys.argv[sys.argv.index('--') + 1:] \
+           if '--' in sys.argv \
+           else sys.argv[1:]
+    opts = options.parse(args)
