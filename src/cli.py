@@ -61,7 +61,7 @@ class CLIRunner:
     def read(self):
         try:
             ch = self.stdscr.getkey()
-        except:
+        except curses.error:
             return
 
         if ch == 'q':
