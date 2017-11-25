@@ -27,5 +27,5 @@ def parse(args=sys.argv[1:]):
         if hasattr(style, 'populate_args'):
             style.populate_args(subparser)
     result = parser.parse_args(args)
-    style = STYLES[result.style]
+    style = STYLES[result.style or DEFAULT_STYLE_NAME]
     return Options(style(result), result.input_file)
