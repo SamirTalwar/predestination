@@ -31,6 +31,8 @@ class CLIRunner:
     def run(self):
         curses.noecho()
         curses.cbreak()
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
 
         self.load()
 
@@ -79,7 +81,8 @@ class CLIRunner:
     def display(self):
         self.stdscr.clear()
         for i, line in enumerate(self.life.matrix.tolist()):
-            self.stdscr.addstr(i, 0, ''.join(CLI.outputs[n] for n in line))
+            self.stdscr.addstr(i, 0, ''.join(CLI.outputs[n] for n in line),
+                               curses.color_pair(1))
         self.stdscr.refresh()
 
 
