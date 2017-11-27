@@ -68,13 +68,17 @@ class CLIRunner:
         if ch == ' ':
             return self.live
         elif ch == 'KEY_UP':
-            self.marker = (self.marker[0], self.marker[1] - 1)
+            self.marker = (self.marker[0] % self.width,
+                           (self.marker[1] - 1) % self.height)
         elif ch == 'KEY_DOWN':
-            self.marker = (self.marker[0], self.marker[1] + 1)
+            self.marker = (self.marker[0] % self.width,
+                           (self.marker[1] + 1) % self.height)
         elif ch == 'KEY_LEFT':
-            self.marker = (self.marker[0] - 1, self.marker[1])
+            self.marker = ((self.marker[0] - 1) % self.width,
+                           self.marker[1] % self.height)
         elif ch == 'KEY_RIGHT':
-            self.marker = (self.marker[0] + 1, self.marker[1])
+            self.marker = ((self.marker[0] + 1) % self.width,
+                           self.marker[1] % self.height)
 
     def read(self):
         try:
