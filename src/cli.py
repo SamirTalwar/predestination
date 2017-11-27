@@ -27,12 +27,14 @@ class CLIRunner:
         self.input_file = options.input_file
         self.style = options.style
         self.stdscr = stdscr
+        self.marker = None
 
     def run(self):
         curses.noecho()
         curses.cbreak()
         curses.start_color()
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
 
         self.load()
 
@@ -47,6 +49,8 @@ class CLIRunner:
 
     def live(self):
         self.stdscr.nodelay(True)
+        self.marker = None
+
         self.display()
         self.life = self.life.next(self.style)
         time.sleep(0.1)
@@ -56,9 +60,22 @@ class CLIRunner:
 
     def pause(self):
         self.stdscr.nodelay(False)
+
+        if not self.marker:
+            self.marker = (int(self.width / 2), int(self.height / 2))
         self.display()
-        if self.read() == ' ':
+
+        ch = self.read()
+        if ch == ' ':
             return self.live
+        elif ch == 'KEY_UP':
+            self.marker = (self.marker[0], self.marker[1] - 1)
+        elif ch == 'KEY_DOWN':
+            self.marker = (self.marker[0], self.marker[1] + 1)
+        elif ch == 'KEY_LEFT':
+            self.marker = (self.marker[0] - 1, self.marker[1])
+        elif ch == 'KEY_RIGHT':
+            self.marker = (self.marker[0] + 1, self.marker[1])
 
     def read(self):
         try:
@@ -76,6 +93,8 @@ class CLIRunner:
             self.life = Life.from_file(self.input_file)
         else:
             height, width = self.stdscr.getmaxyx()
+            self.width = width
+            self.height = height
             self.life = Life.random(height - 1, width - 1)
 
     def display(self):
@@ -83,6 +102,10 @@ class CLIRunner:
         for i, line in enumerate(self.life.matrix.tolist()):
             self.stdscr.addstr(i, 0, ''.join(CLI.outputs[n] for n in line),
                                curses.color_pair(1))
+        if self.marker:
+            self.stdscr.addstr(self.marker[1], self.marker[0], ' ',
+                               curses.color_pair(2))
+        self.stdscr.move(self.height - 1, 0)
         self.stdscr.refresh()
 
 
