@@ -1,29 +1,21 @@
 SHELL := zsh -e -u -o pipefail
 
-PYTHON = python3.6
-SITE_PACKAGES = env/lib/$(PYTHON)/site-packages
+CONDA_ENVIRONMENT = predestination
+CONDA_FILE = conda.txt
 TAG = samirtalwar/predestination
 
-.PHONY: site-packages
-site-packages: $(SITE_PACKAGES)
+.PHONY: conda-save
+conda-save:
+	conda list --name=$(CONDA_ENVIRONMENT) --explicit > $(CONDA_FILE)
 
-$(SITE_PACKAGES): env/bin/python requirements.txt
-	env/bin/pip install --requirement=requirements.txt
+.PHONY: conda-load
+conda-load:
+	conda create --name=$(CONDA_ENVIRONMENT) --file=$(CONDA_FILE)
 
-env/bin/python:
-	virtualenv --python=$(PYTHON) env
-
-.PHONY: freeze
-freeze: env/bin/python
-	env/bin/pip freeze > requirements.txt
-
-.PHONY: upgrade-dependencies
-upgrade-dependencies: env/bin/python
-	@ packages=($$(env/bin/pip list --outdated --format=json | jq -r '.[] | .name')); \
-	if [[ "$${#packages}" -gt 0 ]]; then \
-		env/bin/pip install --upgrade $${packages[@]}; \
-		env/bin/pip freeze > requirements.txt; \
-	fi
+.PHONY: conda-update
+conda-update:
+	conda update --name=$(CONDA_ENVIRONMENT) --all
+	conda list --name=$(CONDA_ENVIRONMENT) --explicit > $(CONDA_FILE)
 
 .PHONY: docker-build
 docker-build:
