@@ -7,18 +7,12 @@ cd $(dirname $0)
 
 PORT=${PORT:-8080}
 
-if [[ -d env ]]; then
-  GUNICORN=env/bin/gunicorn
-  PYTHONPATH=src,env/lib/python3.6/site-packages
-else
-  GUNICORN=gunicorn
-  PYTHONPATH=src
-fi
+export PYTHONPATH=src:${PYTHONPATH:-}
 
 PID=0
 
 function start_app {
-  $GUNICORN \
+  gunicorn \
     --bind="0.0.0.0:${PORT}" \
     --pythonpath=$PYTHONPATH \
     --worker-class=eventlet \

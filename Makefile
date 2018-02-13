@@ -1,21 +1,14 @@
 SHELL := zsh -e -u -o pipefail
 
-CONDA_ENVIRONMENT = predestination
-CONDA_FILE = conda.txt
 TAG = samirtalwar/predestination
 
-.PHONY: conda-save
-conda-save:
-	conda list --name=$(CONDA_ENVIRONMENT) --explicit > $(CONDA_FILE)
+.PHONY: conda-env-create
+conda-env-create:
+	conda env create
 
-.PHONY: conda-load
-conda-load:
-	conda create --name=$(CONDA_ENVIRONMENT) --file=$(CONDA_FILE)
-
-.PHONY: conda-update
-conda-update:
-	conda update --name=$(CONDA_ENVIRONMENT) --all
-	conda list --name=$(CONDA_ENVIRONMENT) --explicit > $(CONDA_FILE)
+.PHONY: conda-env-update
+conda-env-update:
+	conda env update
 
 .PHONY: docker-build
 docker-build:
