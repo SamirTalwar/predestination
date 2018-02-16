@@ -1,6 +1,8 @@
+.envrc
 .git
 Dockerfile
 Makefile
 README.md
-env
+
+__pycache__
 *.pyc

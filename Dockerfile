@@ -1,13 +1,14 @@
-FROM python:3
+FROM continuumio/anaconda
 
 RUN set -ex; \
     apt-get update -qq; \
     apt-get install -qqy zsh
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PATH /opt/conda/envs/app/bin:$PATH
+COPY environment.yml ./
+RUN conda env create --name=app
 
 COPY . ./
 
