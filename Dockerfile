@@ -1,4 +1,4 @@
-FROM continuumio/anaconda
+FROM continuumio/miniconda3
 
 RUN set -ex; \
     apt-get update -qq; \
@@ -8,7 +8,9 @@ WORKDIR /app
 
 ENV PATH /opt/conda/envs/app/bin:$PATH
 COPY environment.yml ./
-RUN conda env create --name=app
+RUN set -ex; \
+    conda env create --name=app; \
+    rm -r /opt/conda/pkgs
 
 COPY . ./
 
