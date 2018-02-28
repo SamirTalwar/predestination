@@ -8,11 +8,11 @@ Several implementations of [Conway's Game of Life][].
 
 ## Building
 
-It's Python, so all you need is Python 3.6 and [virtualenv][] (which you can install with `pip install virtualenv` or similar).
+This project uses Python and Anaconda. If you don't have Anaconda, [follow the instructions][Anaconda Installation] to install it. You can use Miniconda if you'd rather not download the entire planet.
 
 Then just run `make` to create an environment and all the application dependencies.
 
-[virtualenv]: https://virtualenv.pypa.io/
+[Anaconda Installation]: https://docs.anaconda.com/anaconda/install/
 
 ## Running
 
@@ -30,11 +30,11 @@ Just run `./web`. It accepts the same options as `./cli`, and you can set the `P
 
 You can configure the application to use a different style of iteration.
 
-There are currently three styles, which can be specified using the `--style` option:
+There are currently three styles, which can be specified on the command line (e.g. `./cli neural-network`).
 
   * `translate` (the default) uses matrix translation to calculate the next generation.
   * `mapping` uses a huge lookup table.
-  * `neural_network` uses a basic 3-layer neural network, which requires training first.
+  * `neural-network` uses a basic 3-layer neural network, which requires training first.
     To train it, run `PYTHONPATH=src python ./src/styles/neural_network.py`.
 
 ### Input
