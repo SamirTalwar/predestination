@@ -5,7 +5,7 @@ import pickle
 import numpy
 
 import matrices
-import styles.translate as reference
+import styles.translate as reference_style
 from life import Life
 
 root = os.path.realpath(os.path.join(
@@ -54,6 +54,8 @@ def training_data(width, height):
     category_indices = numpy.repeat(numpy.matrix([categories]), size, axis=0)
 
     os.makedirs(training_dir, exist_ok=True)
+
+    reference = reference_style.Style(None)
 
     def iterate(life):
         X = matrices.windows(life.matrix).reshape(size, input_columns)
