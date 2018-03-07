@@ -3,14 +3,8 @@
 set -e
 set -u
 
-cd $(dirname $0)
+cd ${0:h}
 
-if [[ -d env ]]; then
-  PYTHON=env/bin/python
-  PYTHONPATH=src,env/lib/python3.6/site-packages
-else
-  PYTHON=python
-  PYTHONPATH=src
-fi
+export PYTHONPATH=src:${PYTHONPATH:-}
 
-$PYTHON src/cli.py $@
+python src/cli.py $@

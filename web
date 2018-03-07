@@ -3,10 +3,9 @@
 set -e
 set -u
 
-cd $(dirname $0)
+cd ${0:h}
 
-PORT=${PORT:-8080}
-
+export PORT=${PORT:-8080}
 export PYTHONPATH=src:${PYTHONPATH:-}
 
 PID=0
@@ -14,7 +13,7 @@ PID=0
 function start_app {
   gunicorn \
     --bind="0.0.0.0:${PORT}" \
-    --pythonpath=$PYTHONPATH \
+    --pythonpath=${PYTHONPATH} \
     --worker-class=eventlet \
     --workers=1 \
     web:app \

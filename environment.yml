@@ -5,9 +5,9 @@ dependencies:
 - python=3.6.4
 - pip=9.0.1
 - pip:
-  - eventlet==0.22.0
+  - eventlet==0.22.1
   - flake8==3.5.0
   - flask==0.12.2
-  - flask-socketio==2.9.2
+  - flask-socketio==2.9.4
   - gunicorn==19.7.1
-  - numpy==1.14.0
+  - numpy==1.14.1
