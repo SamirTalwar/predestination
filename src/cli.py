@@ -94,6 +94,8 @@ class CLIRunner:
     def load(self):
         if self.input_file:
             self.life = Life.from_file(self.input_file)
+            self.width = self.life.width
+            self.height = self.life.height
         else:
             height, width = self.stdscr.getmaxyx()
             self.width = width

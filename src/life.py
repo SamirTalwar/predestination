@@ -25,6 +25,14 @@ class Life:
     def next(self, style):
         return Life(style.next(self.matrix))
 
+    @property
+    def height(self):
+        return self.matrix.shape[0]
+
+    @property
+    def width(self):
+        return self.matrix.shape[1]
+
     def __repr__(self):
         return 'Life({0!r})'.format(self.matrix)
 
