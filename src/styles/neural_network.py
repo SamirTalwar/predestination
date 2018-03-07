@@ -49,6 +49,7 @@ def random_weights(rows, columns):
 
 def training_data(width, height):
     categories = numpy.array([0, 1])
+    iterations = 10
     input_columns = 9
     size = width * height
     category_indices = numpy.repeat(numpy.matrix([categories]), size, axis=0)
@@ -65,7 +66,8 @@ def training_data(width, height):
         return (next_life, numpy.concatenate((X, y), axis=1))
 
     X_and_y = numpy.matrix(numpy.zeros((0, input_columns + categories.size)))
-    for i in range(10):
+
+    for i in range(iterations):
         life = Life.random(width, height)
         life, X_and_y_1 = iterate(life)
         life, X_and_y_2 = iterate(life)
