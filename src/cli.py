@@ -19,14 +19,28 @@ class CLI:
         self.options = options
 
     def run(self, stdscr):
-        CLIRunner(self.options, stdscr).run()
+        CLIRunner.load(self.options, stdscr).run()
 
 
 class CLIRunner:
-    def __init__(self, options, stdscr):
-        self.input_file = options.input_file
-        self.style = options.style
+    @staticmethod
+    def load(app_options, stdscr):
+        if app_options.input_file:
+            life = Life.from_file(app_options.input_file)
+        else:
+            height, width = stdscr.getmaxyx()
+            width = width
+            height = height
+            life = Life.random(height - 1, width - 1)
+        return CLIRunner(app_options.style, stdscr, life)
+
+    def __init__(self, style, stdscr, life):
+        self.style = style
         self.stdscr = stdscr
+        self.life = life
+        self.width = life.width
+        self.height = life.height
+        self.marker = (int(self.width / 2), int(self.height / 2))
         self.show_marker = False
 
     def run(self):
@@ -35,8 +49,6 @@ class CLIRunner:
         curses.start_color()
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_WHITE)
-
-        self.load()
 
         mode = self.live
         try:
@@ -90,18 +102,6 @@ class CLIRunner:
             raise Quit()
         else:
             return ch
-
-    def load(self):
-        if self.input_file:
-            self.life = Life.from_file(self.input_file)
-            self.width = self.life.width
-            self.height = self.life.height
-        else:
-            height, width = self.stdscr.getmaxyx()
-            self.width = width
-            self.height = height
-            self.marker = (int(self.width / 2), int(self.height / 2))
-            self.life = Life.random(height - 1, width - 1)
 
     def display(self):
         self.stdscr.clear()
