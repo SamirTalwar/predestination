@@ -3,6 +3,10 @@ import os.path
 import pickle
 
 import numpy
+import torch.nn.functional as F
+from torch.autograd import Variable
+from torch import FloatTensor, LongTensor
+from sklearn.metrics import accuracy_score, f1_score
 
 import matrices
 import styles.translate as reference_style
@@ -78,8 +82,25 @@ def training_data(width, height):
     return (X, y)
 
 
+def test(X, weights, labels):
+    print('\nTesting...')
+    threshold = 0.9
+    neurons = [X]
+    for layer_weights in weights:
+        neurons.append(sigmoid(neurons[-1] * layer_weights))
+
+    preds = neurons[-1]
+    preds = numpy.array((preds > threshold).astype(int).flatten().tolist()[0])
+    labels = numpy.array(labels.flatten().tolist()[0])
+
+    f1 = f1_score(labels, preds)
+    accuracy = accuracy_score(labels, preds)
+    print('Accuracy: {:.4f}'.format(accuracy))
+    print('F1 Score: {:.4f}\n'.format(f1))
+
+
 def train():
-    iterations = 100000
+    iterations = 5000
     width = 10
     height = 10
     hidden_layers = [25]
@@ -98,6 +119,7 @@ def train():
             neurons.append(sigmoid(neurons[-1] * layer_weights))
 
         backpropagation = reversed(list(zip(weights, pairwise(neurons))))
+
         error = y - neurons[-1]
         next_layer_error = error
         weight_deltas = []
@@ -114,6 +136,10 @@ def train():
         if i % 1000 == 0:
             print('Training error after %d iterations: %f'
                   % (i, numpy.mean(numpy.abs(error))))
+
+    # Generate some test data
+    X, y = training_data(width, height)
+    test(X, weights, y)
 
     with open(weights_file, 'wb') as f:
         pickle.dump(weights, f)
