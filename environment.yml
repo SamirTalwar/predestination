@@ -10,4 +10,7 @@ dependencies:
   - flask==0.12.2
   - flask-socketio==2.9.4
   - gunicorn==19.7.1
-  - numpy==1.14.1
+  - numpy==1.14.0
+  - scikit-learn=0.19.1
+  - scipy=1.0.0
+  - torch==0.3.0.post4
