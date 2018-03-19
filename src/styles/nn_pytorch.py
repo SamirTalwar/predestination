@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
 from torch import FloatTensor
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, average_precision_score
 import torch.nn.functional as F
 
 from neural_network import (
@@ -41,11 +41,14 @@ def test(width, height, model):
     x, labels = training_data(width, height)
     labels = np.array(labels.flatten().tolist()[0])
     features = Variable(FloatTensor(x))
-    preds = model(features).data.ge(threshold).numpy().flatten()
-    f1 = f1_score(labels, preds)
-    accuracy = accuracy_score(labels, preds)
+    preds = model(features).data
+    bin_preds = preds.ge(threshold).numpy().flatten()
+    f1 = f1_score(labels, bin_preds)
+    accuracy = accuracy_score(labels, bin_preds)
+    avg_prec = average_precision_score(labels, preds.numpy().flatten())
     print('Accuracy: {}'.format(accuracy))
     print('F1 Score: {}'.format(f1))
+    print('Avg Precision: {}'.format(avg_prec))
 
 
 def train():
