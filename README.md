@@ -8,11 +8,13 @@ Several implementations of [Conway's Game of Life][].
 
 ## Building
 
-This project uses Python and Anaconda. If you don't have Anaconda, [follow the instructions][Anaconda Installation] to install it. You can use Miniconda if you'd rather not download the entire planet.
+This project uses Python 3.6 and [`pipenv`][pipenv].
+
+First, install the dependencies with `pipenv install`.
 
 Then just run `make` to create an environment and all the application dependencies.
 
-[Anaconda Installation]: https://docs.anaconda.com/anaconda/install/
+[pipenv]: https://docs.pipenv.org/
 
 ## Running
 
