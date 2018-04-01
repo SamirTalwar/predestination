@@ -12,6 +12,9 @@ flask = "*"
 flask-socketio = "*"
 gunicorn = "*"
 numpy = "*"
+scikit-learn = "*"
+scipy = "*"
+torch = "*"
 
 [dev-packages]
 flake8 = "*"
