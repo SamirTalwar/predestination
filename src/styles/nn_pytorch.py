@@ -2,17 +2,15 @@ import os
 import sys
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.autograd import Variable
-from torch import FloatTensor
 from sklearn.metrics import accuracy_score, f1_score, average_precision_score
+import torch
+from torch import FloatTensor
+from torch.autograd import Variable
+import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
 
-from neural_network import (
-    training_data, random_weights,
-    pairwise, sigmoid, sigmoid_d)
+from styles.neural_network import training_data
 
 
 root = os.path.realpath(os.path.join(
