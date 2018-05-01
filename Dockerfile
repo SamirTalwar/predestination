@@ -1,16 +1,17 @@
-FROM continuumio/miniconda3
+FROM python:3
 
 RUN set -ex; \
     apt-get update -qq; \
-    apt-get install -qqy zsh
+    apt-get upgrade -qqy
+
+RUN apt-get install -qqy zsh
+
+RUN pip install pipenv
 
 WORKDIR /app
 
-ENV PATH /opt/conda/envs/app/bin:$PATH
-COPY environment.yml ./
-RUN set -ex; \
-    conda env create --name=app; \
-    rm -r /opt/conda/pkgs
+COPY Pipfile Pipfile.lock ./
+RUN pipenv install --system --deploy
 
 COPY . ./
 
