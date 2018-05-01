@@ -4,7 +4,7 @@ TAG = samirtalwar/predestination
 
 .PHONY: docker-build
 docker-build:
-	docker build --pull --tag=$(TAG) .
+	docker build --pull --tag=$(TAG) --file=build.Dockerfile .
 
 .PHONY: docker-push
 docker-push: docker-build
