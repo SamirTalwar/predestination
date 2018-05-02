@@ -13,6 +13,15 @@ root = os.path.realpath(os.path.join(
 training_dir = os.path.join(root, 'test', 'training')
 weights_file = os.path.join(training_dir, 'weights.pickle')
 
+parameters = {
+    'iterations': 100000,
+    'width': 10,
+    'height': 10,
+    'hidden_layers': [25],
+    'learning_rate': 0.01,
+    'random_seed': 1,
+}
+
 
 class Style:
     @staticmethod
@@ -76,14 +85,9 @@ def training_data(width, height):
     return (X, y)
 
 
-def train():
-    iterations = 100000
-    width = 10
-    height = 10
-    hidden_layers = [25]
-    learning_rate = 0.01
-
-    numpy.random.seed(1)
+def train(
+        iterations, width, height, hidden_layers, learning_rate, random_seed):
+    numpy.random.seed(random_seed)
     X, y = training_data(width, height)
 
     columns = [X.shape[1]] + hidden_layers + [y.shape[1]]
@@ -119,4 +123,4 @@ def train():
 
 
 if __name__ == '__main__':
-    train()
+    train(**parameters)
