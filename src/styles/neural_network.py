@@ -1,3 +1,4 @@
+import json
 import os
 import os.path
 import pickle
@@ -15,7 +16,29 @@ from life import Life
 root = os.path.realpath(os.path.join(
     os.path.dirname(__file__), os.path.pardir, os.path.pardir))
 training_dir = os.path.join(root, 'test', 'training')
-weights_file = os.path.join(training_dir, 'weights.pickle')
+
+DEFAULT_PARAMETERS = {
+    'iterations': 5000,
+    'width': 10,
+    'height': 10,
+    'hidden_layers': [25],
+    'learning_rate': 0.01,
+    'random_seed': 1,
+}
+
+root = os.path.realpath(os.path.join(
+    os.path.dirname(__file__), os.path.pardir, os.path.pardir))
+training_dir = os.path.join(root, 'test', 'training')
+configuration_file = os.environ.get('CONFIGURATION_FILE')
+if configuration_file:
+    with open(configuration_file) as f:
+        configuration = json.load(f)
+        output_directory = configuration['output_directory']
+        weights_file = os.path.join(output_directory, 'weights.pickle')
+        parameters = {**DEFAULT_PARAMETERS, **configuration['parameters']}
+else:
+    weights_file = os.path.join(training_dir, 'weights.pickle')
+    parameters = DEFAULT_PARAMETERS
 
 
 class Style:
@@ -99,14 +122,9 @@ def test(X, weights, labels):
     print('F1 Score: {:.4f}\n'.format(f1))
 
 
-def train():
-    iterations = 5000
-    width = 10
-    height = 10
-    hidden_layers = [25]
-    learning_rate = 0.01
-
-    numpy.random.seed(1)
+def train(
+        iterations, width, height, hidden_layers, learning_rate, random_seed):
+    numpy.random.seed(random_seed)
     X, y = training_data(width, height)
 
     columns = [X.shape[1]] + hidden_layers + [y.shape[1]]
@@ -147,4 +165,4 @@ def train():
 
 
 if __name__ == '__main__':
-    train()
+    train(**parameters)

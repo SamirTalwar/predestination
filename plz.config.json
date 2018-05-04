@@ -1,0 +1,10 @@
+{
+  "project": "plz",
+  "image": "samirtalwar/predestination",
+  "instance_type": "t2.medium",
+  "command": [
+    "sh",
+    "-c",
+    "PYTHONPATH=src python ./src/styles/neural_network.py"
+  ]
+}
