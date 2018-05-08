@@ -12,33 +12,22 @@ from sklearn.metrics import accuracy_score, f1_score
 import matrices
 import styles.translate as reference_style
 from life import Life
+from parameters import load_parameters
 
-root = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), os.path.pardir, os.path.pardir))
-training_dir = os.path.join(root, 'test', 'training')
-
-DEFAULT_PARAMETERS = {
-    'iterations': 5000,
-    'width': 10,
-    'height': 10,
-    'hidden_layers': [25],
-    'learning_rate': 0.01,
-    'random_seed': 1,
-}
-
-root = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), os.path.pardir, os.path.pardir))
-training_dir = os.path.join(root, 'test', 'training')
-configuration_file = os.environ.get('CONFIGURATION_FILE')
-if configuration_file:
-    with open(configuration_file) as f:
-        configuration = json.load(f)
-        output_directory = configuration['output_directory']
-        weights_file = os.path.join(output_directory, 'weights.pickle')
-        parameters = {**DEFAULT_PARAMETERS, **configuration['parameters']}
-else:
-    weights_file = os.path.join(training_dir, 'weights.pickle')
-    parameters = DEFAULT_PARAMETERS
+training_dir = 'test/training'
+parameters, output_files = load_parameters(
+    default_parameters={
+        'iterations': 5000,
+        'width': 10,
+        'height': 10,
+        'hidden_layers': [25],
+        'learning_rate': 0.01,
+        'random_seed': 1,
+    },
+    default_output_directory=training_dir,
+    output_filenames={'weights': 'weights.pickle'},
+)
+weights_file = output_files['weights']
 
 
 class Style:
