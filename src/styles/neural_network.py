@@ -1,12 +1,8 @@
-import json
 import os
 import os.path
 import pickle
 
 import numpy
-import torch.nn.functional as F
-from torch.autograd import Variable
-from torch import FloatTensor, LongTensor
 from sklearn.metrics import accuracy_score, f1_score
 
 import matrices
