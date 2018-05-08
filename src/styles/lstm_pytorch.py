@@ -1,7 +1,7 @@
 import os
 import sys
 
-import numpy as np
+import numpy
 from sklearn.metrics import accuracy_score, f1_score
 import torch
 from torch import FloatTensor
@@ -10,13 +10,59 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import matrices
+from parameters import load_parameters
 from styles.neural_network import training_data
 
 
-root = os.path.realpath(os.path.join(
-    os.path.dirname(__file__), os.path.pardir, os.path.pardir))
-training_dir = os.path.join(root, 'test', 'training')
-save_file = os.path.join(training_dir, 'lstm_pytorch.pth')
+parameters, output_files = load_parameters(
+    default_parameters={
+        'epochs': 50,
+        'width': 10,
+        'height': 10,
+        'window_size': 9,
+        'embedding_dim': 5,
+        'hidden_dim': 5,
+        'output_dim': 2,
+        'vocab_size': 512,
+        'learning_rate': 0.3,
+        'random_seed': 42,
+    },
+    default_output_directory='test/training',
+    output_filenames={
+        'model_parameters': 'lstm_pytorch_parameters.pth',
+        'model': 'lstm_pytorch_model.pth',
+    },
+)
+model_parameters_file = output_files['model_parameters']
+model_file = output_files['model']
+
+
+class Style:
+    @staticmethod
+    def populate_args(parser):
+        parser.add_argument('--model-parameters-file',
+                            default=model_parameters_file)
+        parser.add_argument('--model-file',
+                            default=model_file)
+
+    def __init__(self, args):
+        model_parameters = torch.load(args.model_parameters_file)
+        self.model = Model(**model_parameters)
+        self.model.load_state_dict(torch.load(args.model_file))
+        self.vocabulary = get_vocabulary(
+                model_parameters['vocab_size'],
+                model_parameters['window_size'])
+
+    def next(self, grid):
+        reshaped = numpy.matrix(matrices.windows(grid).reshape(grid.size, 9))
+        with open('/tmp/foo', 'w') as f:
+            print(type(grid), file=f)
+            print(type(reshaped), file=f)
+        features = encode_features(reshaped, self.vocabulary)
+        predictions = self.model(features).detach().numpy()
+        y = numpy.argmax(predictions, axis=1)
+        return y.reshape(grid.shape)
 
 
 def get_vocabulary(vocab_size, window_size):
@@ -37,17 +83,27 @@ def encode_features(seq, to_ix):
 
 
 def prepare_labels(labels):
-    return np.array(np.argmax(labels, axis=1).flatten().tolist()[0])
+    return numpy.array(numpy.argmax(labels, axis=1).flatten().tolist()[0])
 
 
-class LSTMGOL(nn.Module):
-    def __init__(self, embedding_dim, hidden_dim, num_windows,
-                 output_dim, vocab_size, window_size, grid_w, grid_h):
-        super(LSTMGOL, self).__init__()
+class Model(nn.Module):
+    def __init__(self, width, height, num_windows, window_size,
+                 embedding_dim, hidden_dim, output_dim, vocab_size):
+        super().__init__()
+        self.init_parameters = {
+            'width': width,
+            'height': height,
+            'num_windows': num_windows,
+            'window_size': window_size,
+            'embedding_dim': embedding_dim,
+            'hidden_dim': hidden_dim,
+            'output_dim': output_dim,
+            'vocab_size': vocab_size,
+        }
         self.hidden_dim = hidden_dim
         self.vocab_size = vocab_size
-        self.grid_w = grid_w
-        self.grid_h = grid_h
+        self.width = width
+        self.height = height
         self.window_size = window_size
         self.num_windows = num_windows
         self.window_embeddings = nn.Embedding(num_windows, embedding_dim)
@@ -72,7 +128,7 @@ def test(width, height, model, vocabulary):
     threshold = 0.999
     print('\nTesting model with {} threshold'.format(threshold))
     features, labels = training_data(width, height)
-    labels = np.array(labels.flatten().tolist()[0])
+    labels = numpy.array(labels.flatten().tolist()[0])
     features = encode_features(features, vocabulary)
     preds = model(features).data.ge(threshold).numpy().flatten()
     f1 = f1_score(labels, preds)
@@ -81,22 +137,18 @@ def test(width, height, model, vocabulary):
     print('F1 Score: {}'.format(f1))
 
 
-def train():
-    grid_w, grid_h, window_size = 10, 10, 9
-    embedding_dim, hidden_dim, output_dim = 5, 5, 2
-    vocab_size = 512
-
-    epochs = 50
-    lr = 0.3
-
-    np.random.seed(42)
-    features, labels = training_data(grid_w, grid_h)
+def train(epochs,
+          width, height, window_size,
+          embedding_dim, hidden_dim, output_dim,
+          vocab_size, learning_rate, random_seed):
+    numpy.random.seed(random_seed)
+    features, labels = training_data(width, height)
     vocabulary = get_vocabulary(vocab_size, window_size)
 
-    model = LSTMGOL(embedding_dim, hidden_dim, features.shape[0],
-                    output_dim, vocab_size, window_size, grid_w, grid_h)
+    model = Model(width, height, features.shape[0], window_size,
+                  embedding_dim, hidden_dim, output_dim, vocab_size)
     loss_fn = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     for e in range(1, epochs + 1):
         model.zero_grad()
@@ -113,19 +165,22 @@ def train():
         if e % 10 == 0:
             print('Epoch {}/{} - Loss: {}'.format(e, epochs, loss.data[0]))
 
-    torch.save(model, save_file)
-    print('Saved model in {}'.format(save_file))
+    torch.save(model.init_parameters, model_parameters_file)
+    torch.save(model.state_dict(), model_file)
+    print('Saved model in {}'.format(model_file))
 
-    test(grid_w, grid_h, model, vocabulary)
+    test(width, height, model, vocabulary)
 
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == 'test':
-        if os.path.isfile(save_file):
-            model = torch.load(save_file)
-            test(model.grid_w, model.grid_h, model,
+        if os.path.isfile(model_file):
+            model_parameters = torch.load(model_parameters_file)
+            model = Model(**model_parameters)
+            model.load_state_dict(torch.load(model_file))
+            test(model.width, model.height, model,
                  get_vocabulary(model.vocab_size, model.window_size))
         else:
             print('Could not find save file for this model')
     else:
-        train()
+        train(**parameters)
