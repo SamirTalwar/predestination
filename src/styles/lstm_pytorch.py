@@ -39,6 +39,8 @@ model_file = output_files['model']
 
 
 class Style:
+    NAME = 'lstm-pytorch'
+
     @staticmethod
     def populate_args(parser):
         parser.add_argument('--model-parameters-file',

@@ -27,6 +27,8 @@ weights_file = output_files['weights']
 
 
 class Style:
+    NAME = 'neural-network'
+
     @staticmethod
     def populate_args(parser):
         parser.add_argument('--weights-file', default=weights_file)

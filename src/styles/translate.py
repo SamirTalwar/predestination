@@ -2,6 +2,8 @@ import numpy
 
 
 class Style:
+    NAME = 'translate'
+
     def __init__(self, args):
         pass
 

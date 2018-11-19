@@ -4,6 +4,8 @@ import matrices
 
 
 class Style:
+    NAME = 'mapping'
+
     def __init__(self, args):
         pass
 

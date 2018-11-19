@@ -4,6 +4,8 @@ import numpy
 
 
 class Style:
+    NAME = 'external'
+
     @staticmethod
     def populate_args(parser):
         parser.add_argument('program')
