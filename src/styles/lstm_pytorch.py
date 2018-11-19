@@ -54,7 +54,7 @@ class Style:
             model_parameters["vocab_size"], model_parameters["window_size"]
         )
 
-    def next(self, grid):
+    def step(self, grid):
         reshaped = numpy.matrix(matrices.windows(grid).reshape(grid.size, 9))
         with open("/tmp/foo", "w") as f:
             print(type(grid), file=f)

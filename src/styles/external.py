@@ -13,7 +13,7 @@ class Style:
     def __init__(self, args):
         self.program = args.program
 
-    def next(self, grid):
+    def step(self, grid):
         current_generation = to_string(grid)
         process = subprocess.run(
             self.program,

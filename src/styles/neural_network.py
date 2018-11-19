@@ -37,7 +37,7 @@ class Style:
         with open(args.weights_file, "rb") as f:
             self.weights = pickle.load(f)
 
-    def next(self, grid):
+    def step(self, grid):
         current_layer = [matrices.windows(grid).reshape(grid.size, 9)]
         for layer_weights in self.weights:
             current_layer = sigmoid(current_layer * layer_weights)
@@ -74,14 +74,14 @@ def training_data(width, height):
 
     def iterate(life):
         X = matrices.windows(life.matrix).reshape(size, input_columns)
-        next_life = life.next(reference)
+        next_life = life.step(reference)
         results = next_life.matrix.reshape(size, 1)
         y = (category_indices == results).astype(int)
         return (next_life, numpy.concatenate((X, y), axis=1))
 
     X_and_y = numpy.matrix(numpy.zeros((0, input_columns + categories.size)))
 
-    for i in range(iterations):
+    for _i in range(iterations):
         life = Life.random(width, height)
         life, X_and_y_1 = iterate(life)
         life, X_and_y_2 = iterate(life)

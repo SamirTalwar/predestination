@@ -47,7 +47,7 @@ class Style:
         self.model = Model(**model_parameters)
         self.model.load_state_dict(torch.load(args.model_file))
 
-    def next(self, grid):
+    def step(self, grid):
         reshaped = matrices.windows(grid).reshape(grid.size, 9)
         features = Variable(FloatTensor(reshaped))
         predictions = self.model(features).detach().numpy()

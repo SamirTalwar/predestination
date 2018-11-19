@@ -6,10 +6,12 @@ root = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 
 
 def load_parameters(
-    default_parameters={},
+    default_parameters=None,
     default_output_directory=tempfile.tempdir,
-    output_filenames={},
+    output_filenames=None,
 ):
+    default_parameters = default_parameters or {}
+    output_filenames = output_filenames or {}
     configuration_file = os.environ.get("CONFIGURATION_FILE")
     if configuration_file:
         with open(configuration_file) as f:

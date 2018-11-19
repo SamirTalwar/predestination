@@ -65,7 +65,7 @@ class CLIRunner:
         self.show_marker = False
 
         self.display()
-        self.life = self.life.next(self.style)
+        self.life = self.life.step(self.style)
         time.sleep(0.1)
 
         if self.read() == " ":

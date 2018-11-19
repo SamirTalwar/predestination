@@ -19,8 +19,8 @@ class Life:
             numpy.matrix(numpy.random.random_integers(0, 1, k)).reshape((height, width))
         )
 
-    def next(self, style):
-        return Life(style.next(self.matrix))
+    def step(self, style):
+        return Life(style.step(self.matrix))
 
     @property
     def height(self):

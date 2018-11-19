@@ -7,7 +7,7 @@ class Style:
     def __init__(self, args):
         pass
 
-    def next(self, grid):
+    def step(self, grid):
         neighbours = sum(translate(grid, x, y) for (x, y) in directions)
         return (((grid == 1) & (neighbours == 2)) | (neighbours == 3)).astype(int)
 
