@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [requires]
-python_version = "3.6"
+python_version = "3"
 
 [packages]
 eventlet = "*"
@@ -12,9 +12,6 @@ flask = "*"
 flask-socketio = "*"
 gunicorn = "*"
 numpy = "*"
-scikit-learn = "*"
-scipy = "*"
-torch = "*"
 
 [dev-packages]
 flake8 = "*"
