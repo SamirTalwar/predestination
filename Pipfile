@@ -14,4 +14,8 @@ gunicorn = "*"
 numpy = "*"
 
 [dev-packages]
+black = "*"
 flake8 = "*"
+
+[pipenv]
+allow_prereleases = true

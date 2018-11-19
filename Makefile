@@ -2,6 +2,11 @@ SHELL := zsh -e -u -o pipefail
 
 TAG = samirtalwar/predestination
 
+.PHONY: lint
+lint:
+	black	src
+	flake8
+
 .PHONY: docker-build
 docker-build:
 	docker build --pull --tag=$(TAG) --file=build.Dockerfile .

@@ -12,9 +12,8 @@ def integer_repr(array):
 def windows(matrix):
     grown = grow(matrix)
     windows = numpy_stride.as_strided(
-            grown,
-            shape=matrix.shape + (3, 3),
-            strides=grown.strides + grown.strides)
+        grown, shape=matrix.shape + (3, 3), strides=grown.strides + grown.strides
+    )
     return windows.reshape(matrix.shape + (9,))
 
 

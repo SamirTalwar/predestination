@@ -13,35 +13,35 @@ from life import Life
 
 opts = None
 app = flask.Flask(__name__, root_path=os.getcwd())
-transports = os.environ.get('TRANSPORTS', 'websocket polling').split()
+transports = os.environ.get("TRANSPORTS", "websocket polling").split()
 socketio = flask_socketio.SocketIO(app)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return flask.templating.render_template(
-            'index.html', transports=transports)
+    return flask.templating.render_template("index.html", transports=transports)
 
 
-@socketio.on('start')
+@socketio.on("start")
 def start(data):
-    life = Life.from_file(opts.input_file) \
-            if opts.input_file \
-            else Life.random(int(data['height']), int(data['width']))
-    flask_socketio.emit('generation', life.matrix.tolist())
+    life = (
+        Life.from_file(opts.input_file)
+        if opts.input_file
+        else Life.random(int(data["height"]), int(data["width"]))
+    )
+    flask_socketio.emit("generation", life.matrix.tolist())
 
 
-@socketio.on('next')
+@socketio.on("next")
 def next(grid):
     life = Life(grid)
     life = life.next(opts.style)
-    flask_socketio.emit('generation', life.matrix.tolist())
+    flask_socketio.emit("generation", life.matrix.tolist())
 
 
 if __name__ == "__main__":
     socketio.run(app)
 else:
-    args = sys.argv[sys.argv.index('--') + 1:] \
-           if '--' in sys.argv \
-           else sys.argv[1:]
+    args_offset = sys.argv.index("--") + 1
+    args = sys.argv[args_offset:] if "--" in sys.argv else sys.argv[1:]
     opts = options.parse(args)

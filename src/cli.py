@@ -14,7 +14,7 @@ def main(args):
 
 
 class CLI:
-    outputs = {0: '∙', 1: '█'}
+    outputs = {0: "∙", 1: "█"}
 
     def __init__(self, options):
         self.options = options
@@ -68,7 +68,7 @@ class CLIRunner:
         self.life = self.life.next(self.style)
         time.sleep(0.1)
 
-        if self.read() == ' ':
+        if self.read() == " ":
             return self.pause
 
     def pause(self):
@@ -78,20 +78,28 @@ class CLIRunner:
         self.display()
 
         ch = self.read()
-        if ch == ' ':
+        if ch == " ":
             return self.live
-        elif ch == 'KEY_UP':
-            self.marker = (self.marker[0] % self.width,
-                           (self.marker[1] - 1) % self.height)
-        elif ch == 'KEY_DOWN':
-            self.marker = (self.marker[0] % self.width,
-                           (self.marker[1] + 1) % self.height)
-        elif ch == 'KEY_LEFT':
-            self.marker = ((self.marker[0] - 1) % self.width,
-                           self.marker[1] % self.height)
-        elif ch == 'KEY_RIGHT':
-            self.marker = ((self.marker[0] + 1) % self.width,
-                           self.marker[1] % self.height)
+        elif ch == "KEY_UP":
+            self.marker = (
+                self.marker[0] % self.width,
+                (self.marker[1] - 1) % self.height,
+            )
+        elif ch == "KEY_DOWN":
+            self.marker = (
+                self.marker[0] % self.width,
+                (self.marker[1] + 1) % self.height,
+            )
+        elif ch == "KEY_LEFT":
+            self.marker = (
+                (self.marker[0] - 1) % self.width,
+                self.marker[1] % self.height,
+            )
+        elif ch == "KEY_RIGHT":
+            self.marker = (
+                (self.marker[0] + 1) % self.width,
+                self.marker[1] % self.height,
+            )
 
     def read(self):
         try:
@@ -99,7 +107,7 @@ class CLIRunner:
         except curses.error:
             return
 
-        if ch == 'q':
+        if ch == "q":
             raise Quit()
         else:
             return ch
@@ -107,11 +115,13 @@ class CLIRunner:
     def display(self):
         self.stdscr.clear()
         for i, line in enumerate(self.life.matrix.tolist()):
-            self.stdscr.addstr(i, 0, ''.join(CLI.outputs[n] for n in line),
-                               curses.color_pair(1))
+            self.stdscr.addstr(
+                i, 0, "".join(CLI.outputs[n] for n in line), curses.color_pair(1)
+            )
         if self.show_marker:
-            self.stdscr.addstr(self.marker[1], self.marker[0], ' ',
-                               curses.color_pair(2))
+            self.stdscr.addstr(
+                self.marker[1], self.marker[0], " ", curses.color_pair(2)
+            )
         self.stdscr.move(self.height - 1, 0)
         self.stdscr.refresh()
 
@@ -120,5 +130,5 @@ class Quit(Exception):
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(sys.argv[1:])
