@@ -4,6 +4,7 @@ TAG = samirtalwar/predestination
 
 .PHONY: lint
 lint:
+	isort src/**/*.py
 	black	src
 	flake8
 

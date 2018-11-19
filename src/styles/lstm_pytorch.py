@@ -3,17 +3,16 @@ import sys
 
 import numpy
 from sklearn.metrics import accuracy_score, f1_score
+
+import matrices
 import torch
-from torch import FloatTensor
-from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-
-import matrices
 from parameters import load_parameters
 from styles.neural_network import training_data
-
+from torch import FloatTensor
+from torch.autograd import Variable
 
 parameters, output_files = load_parameters(
     default_parameters={
