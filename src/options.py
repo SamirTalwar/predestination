@@ -5,14 +5,27 @@ import os.path
 import sys
 from collections import namedtuple
 
+
+def import_style(name):
+    try:
+        return importlib.import_module('styles.' + name).Style
+    except ModuleNotFoundError:
+        return None
+
+
 STYLES_DIR = os.path.join(os.path.dirname(__file__), 'styles')
 STYLE_NAMES = [os.path.splitext(f)[0]
                for f in os.listdir(STYLES_DIR)
                if os.path.isfile(os.path.join(STYLES_DIR, f))
                and os.path.splitext(f)[1] == '.py']
-STYLES = {name.replace('_', '-'):
-          importlib.import_module('styles.' + name).Style
-          for name in STYLE_NAMES}
+STYLES = {
+    name: style
+    for name, style in {
+        name.replace('_', '-'): import_style(name)
+        for name in STYLE_NAMES
+    }.items()
+    if style is not None
+}
 DEFAULT_STYLE_NAME = 'translate'
 
 Options = namedtuple('Options', ['style', 'input_file'])
