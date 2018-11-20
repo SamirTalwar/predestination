@@ -3,7 +3,6 @@ import os.path
 import pickle
 
 import numpy
-from sklearn.metrics import accuracy_score, f1_score
 
 import matrices
 import styles.translate as reference_style
@@ -92,21 +91,12 @@ def training_data(width, height):
     return (X, y)
 
 
-def test(X, weights, labels):
-    print("\nTesting...")
-    threshold = 0.9
+def test(X, weights, y):
     neurons = [X]
     for layer_weights in weights:
         neurons.append(sigmoid(neurons[-1] * layer_weights))
-
-    preds = neurons[-1]
-    preds = numpy.array((preds > threshold).astype(int).flatten().tolist()[0])
-    labels = numpy.array(labels.flatten().tolist()[0])
-
-    f1 = f1_score(labels, preds)
-    accuracy = accuracy_score(labels, preds)
-    print("Accuracy: {:.4f}".format(accuracy))
-    print("F1 Score: {:.4f}\n".format(f1))
+    error = y - neurons[-1]
+    print("Test error: %f" % numpy.mean(numpy.abs(error)))
 
 
 def train(iterations, width, height, hidden_layers, learning_rate, random_seed):
