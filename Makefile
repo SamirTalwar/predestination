@@ -5,7 +5,7 @@ TAG = samirtalwar/predestination
 .PHONY: lint
 lint:
 	isort src/**/*.py
-	black	src
+	black src
 	flake8
 
 .PHONY: docker-build
